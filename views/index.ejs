@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+  <head>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css"
+      integrity="sha384-R4558gYOUz8mP9YWpZJjofhk+zx0AS11p36HnD2ZKj/6JR5z27gSSULCNHIRReVs"
+      crossorigin="anonymous"
+    />
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"
+      integrity="sha384-z1fJDqw8ZApjGO3/unPWUPsIymfsJmyrDVWC8Tv/a1HeOtGmkwNd/7xUS0Xcnvsx"
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/contrib/auto-render.min.js"
+      integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR"
+      crossorigin="anonymous"
+      onload="renderMathInElement(document.body);"
+    ></script>
+    <script src="https://unpkg.com/function-plot/dist/function-plot.js"></script>
+  </head>
+  <body>
+    <%- result %>
+    <p id="graphon" style="display: none"><%= graph %></p>
+    <p id="equation" style="display: none"><%= graphtext %></p>
+    <p id="firroot" style="display: none"><%= root %></p>
+    <p id="secroot" style="display: none"><%= secroot %></p>
+    <div id="root"></div>
+  </body>
+
+  <script>
+    if (document.getElementById("graphon").innerHTML == "false") {
+      document.getElementById("root").style.display = "none";
+    } else {
+      const firroot = parseFloat(document.getElementById("firroot").innerHTML);
+      const secroot = parseFloat(document.getElementById("secroot").innerHTML);
+      const middleline = (firroot + secroot) / 2;
+      const domainer = [
+        middleline - 2 * Math.abs(firroot - middleline),
+        middleline + 2 * Math.abs(firroot - middleline),
+      ];
+      functionPlot({
+        target: "#root",
+        yAxis: { domain: [-1, 9] },
+        xAxis: { domain: domainer },
+        data: [
+          {
+            fn: document.getElementById("equation").innerHTML,
+          },
+        ],
+        annotations: [
+          {
+            x: firroot,
+            text: `x = ${firroot}`,
+          },
+          {
+            x: secroot,
+            text: `x = ${secroot}`,
+          },
+        ],
+      });
+    }
+  </script>
+</html>
